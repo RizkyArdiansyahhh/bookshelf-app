@@ -211,7 +211,7 @@ function editBook(bookId) {
   labelAuthor.setAttribute("for", "formEditAuthor");
   labelAuthor.innerText = "Penulis: ";
   const author = document.createElement("input");
-  title.setAttribute("id", "formEditAuthor");
+  author.setAttribute("id", "formEditAuthor");
   author.setAttribute("type", "text");
   author.setAttribute("value", bookTarget.author);
   containerAuthor.append(labelAuthor, author);
@@ -222,7 +222,7 @@ function editBook(bookId) {
   labelYear.setAttribute("for", "formEditYear");
   labelYear.innerText = "Year: ";
   const year = document.createElement("input");
-  title.setAttribute("id", "formEditYear");
+  year.setAttribute("id", "formEditYear");
   year.setAttribute("type", "text");
   year.setAttribute("value", bookTarget.year);
   containerYear.append(labelYear, year);
@@ -241,6 +241,32 @@ function editBook(bookId) {
     containerYear,
     containerBtnEdit
   );
-  const containerFormEdit = document.querySelector("/form-edit");
+  const containerFormEdit = document.querySelector(".form-edit");
   containerFormEdit.append(formEdit);
+
+  const overlay = document.querySelector(".overlay");
+  overlay.classList.add("active");
+
+  formEdit.addEventListener("submit", function (e) {
+    e.preventDefault();
+    actionEditBook(bookTarget);
+  });
+}
+
+// function saat edit di submit
+function actionEditBook(bookTarget) {
+  const titleNew = document.getElementById("formEditTitle").value;
+  const authorNew = document.getElementById("formEditAuthor").value;
+  const yearNew = document.getElementById("formEditYear").value;
+
+  bookTarget.title = titleNew;
+  bookTarget.author = authorNew;
+  bookTarget.year = yearNew;
+
+  document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
+  const overlay = document.querySelector(".overlay");
+  overlay.classList.remove("active");
+  const formEdit = document.querySelector(".form-edit");
+  formEdit.innerHTML = "";
 }
