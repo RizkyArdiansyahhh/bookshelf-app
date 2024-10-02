@@ -5,7 +5,8 @@
 }
 body {
   font-family: "Poppins", Arial, Helvetica, sans-serif;
-  height: 100vh;
+  min-height: 100vh;
+  position: relative; /* Menambahkan posisi relative */
 }
 body::before {
   content: "";
@@ -109,17 +110,14 @@ main .container-right #cari-buku form input {
 /* SECTION CARI BUKU END */
 
 /* SECTION RAK BUKU START */
-main .container-right .rak-buku #uncompleted #incompleteBookList {
+main .container-right .rak-buku [data-testid="bookItem"] {
   background-color: #7cf5ff;
   padding: 1.3rem;
   border-radius: 15px;
 }
-main .container-right .rak-buku #completed #completeBookList {
-  background-color: #cdc1ff;
-  padding: 1.3rem;
-  border-radius: 15px;
-}
+
 main .container-right .rak-buku button.selesai,
+main .container-right .rak-buku button.belum-selesai,
 main .container-right .rak-buku button.hapus,
 main .container-right .rak-buku button.edit {
   padding-inline: 1rem;
@@ -129,11 +127,14 @@ main .container-right .rak-buku button.edit {
   border-radius: 8px;
   font-weight: 700;
   transition: 0.3s;
+  margin-right: 0.5rem;
 }
-main .container-right .rak-buku button.selesai {
+main .container-right .rak-buku button.selesai,
+main .container-right .rak-buku button.belum-selesai {
   background-color: #6ec207;
 }
-main .container-right .rak-buku button.selesai:hover {
+main .container-right .rak-buku button.selesai:hover,
+main .container-right .rak-buku button.belum-selesai:hover {
   background-color: #f5efff;
   border: 1px soldi #6ec207;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
