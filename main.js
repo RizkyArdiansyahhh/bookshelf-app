@@ -1,5 +1,6 @@
 const books = [];
 const RENDER_EVENT = "render-book";
+const STORAGE_KEY = "Bookshelf App";
 
 document.addEventListener("DOMContentLoaded", function () {
   const bookForm = document.getElementById("bookForm");
@@ -13,17 +14,19 @@ function addBook() {
   const judul = document.getElementById("bookFormTitle").value;
   const penulis = document.getElementById("bookFormAuthor").value;
   const tahun = document.getElementById("bookFormYear").value;
+  const checkbox = document.getElementById("bookFormIsComplete");
 
   const bookObject = generatedBookObject(
     generateId(),
     judul,
     penulis,
     tahun,
-    false
+    checkbox.checked
   );
   books.push(bookObject);
 
   document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
 }
 
 // fungsi untuk membuat id unik
@@ -61,6 +64,22 @@ document.addEventListener(RENDER_EVENT, function () {
   }
 });
 
+// Menambahkan data buku ke local storage
+function saveData() {
+  if (isStorageExist()) {
+    const parsed = JSON.stringify(books);
+    localStorage.setItem(STORAGE_KEY, parsed);
+  }
+}
+
+function isStorageExist() {
+  if (typeof Storage === undefined) {
+    alert("Browser kamu tidak mendukung local storage");
+    return false;
+  }
+  return true;
+}
+
 function makeBook(bookObject) {
   const bookItem = document.createElement("div");
   bookItem.setAttribute("data-bookid", bookObject.id);
@@ -86,12 +105,20 @@ function makeBook(bookObject) {
     btnBelumSelesai.setAttribute("data-testid", "bookItemIsIncompleteButton");
     btnBelumSelesai.innerText = "Belum Selesai dibaca";
 
+    btnBelumSelesai.addEventListener("click", function () {
+      moveToIncomplete(bookObject.id);
+    });
+
     containerButton.append(btnBelumSelesai);
   } else {
     const btnSelesai = document.createElement("button");
     btnSelesai.classList.add("selesai");
     btnSelesai.setAttribute("data-testid", "bookItemIsCompleteButton");
     btnSelesai.innerText = "Selesai dibaca";
+
+    btnSelesai.addEventListener("click", function () {
+      moveToComplete(bookObject.id);
+    });
 
     containerButton.append(btnSelesai);
   }
@@ -100,13 +127,120 @@ function makeBook(bookObject) {
   btnHapus.setAttribute("data-testid", "bookItemDeleteButton");
   btnHapus.innerText = "Hapus Buku";
 
+  btnHapus.addEventListener("click", function () {
+    removeBook(bookObject.id);
+  });
+
   const btnEdit = document.createElement("button");
   btnEdit.classList.add("edit");
   btnEdit.setAttribute("data-testid", "bookItemEditButton");
   btnEdit.innerText = "Edit Buku";
 
+  btnEdit.addEventListener("click", function () {
+    editBook(bookObject.id);
+  });
+
   containerButton.append(btnHapus, btnEdit);
   //   Menambahkan semuanya di book item
   bookItem.append(bookItemTitle, bookItemAuthor, bookItemYear, containerButton);
   return bookItem;
+}
+
+function findBook(bookId) {
+  for (bookItem of books) {
+    if (bookItem.id == bookId) {
+      return bookItem;
+    }
+  }
+  return null;
+}
+
+// Function memindahkan buku ke rak belum selsai
+function moveToIncomplete(bookId) {
+  const bookTarget = findBook(bookId);
+
+  if (bookTarget === null) return;
+  bookTarget.isComplete = false;
+  document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
+}
+
+// function memindahkan buku ke rak selesai
+function moveToComplete(bookId) {
+  const bookTarget = findBook(bookId);
+
+  if (bookTarget === null) return;
+
+  bookTarget.isComplete = true;
+  document.dispatchEvent(new Event(RENDER_EVENT));
+  saveData();
+}
+
+// function menghapus buku
+function removeBook(bookId) {
+  for (const Index in books) {
+    if (books[Index].id == bookId) {
+      books.splice(Index, 1);
+      document.dispatchEvent(new Event(RENDER_EVENT));
+      saveData();
+      break;
+    }
+  }
+}
+
+function editBook(bookId) {
+  const bookTarget = findBook(bookId);
+
+  const formEdit = document.createElement("form");
+  formEdit.setAttribute("id", "editFormBook");
+
+  const containerTitle = document.createElement("div");
+  const labelTitle = document.createElement("label");
+  labelTitle.classList.add("editJudul");
+  labelTitle.setAttribute("for", "formEditTitle");
+  labelTitle.innerText = "Judul: ";
+  const title = document.createElement("input");
+  title.setAttribute("id", "formEditTitle");
+  title.setAttribute("type", "text");
+  title.setAttribute("value", bookTarget.title);
+  containerTitle.append(labelTitle, title);
+
+  const containerAuthor = document.createElement("div");
+  const labelAuthor = document.createElement("label");
+  labelAuthor.classList.add("editAuthor");
+  labelAuthor.setAttribute("for", "formEditAuthor");
+  labelAuthor.innerText = "Penulis: ";
+  const author = document.createElement("input");
+  title.setAttribute("id", "formEditAuthor");
+  author.setAttribute("type", "text");
+  author.setAttribute("value", bookTarget.author);
+  containerAuthor.append(labelAuthor, author);
+
+  const containerYear = document.createElement("div");
+  const labelYear = document.createElement("label");
+  labelYear.classList.add("editYear");
+  labelYear.setAttribute("for", "formEditYear");
+  labelYear.innerText = "Year: ";
+  const year = document.createElement("input");
+  title.setAttribute("id", "formEditYear");
+  year.setAttribute("type", "text");
+  year.setAttribute("value", bookTarget.year);
+  containerYear.append(labelYear, year);
+
+  const containerBtnEdit = document.createElement("div");
+  containerBtnEdit.classList.add("btn");
+  const btnEdit = document.createElement("button");
+  btnEdit.setAttribute("id", "btnEditForm");
+  btnEdit.setAttribute("type", "submit");
+  btnEdit.innerText = "Edit";
+  containerBtnEdit.append(btnEdit);
+
+  formEdit.append(
+    containerTitle,
+    containerAuthor,
+    containerYear,
+    containerBtnEdit
+  );
+  const containerFormEdit = document.querySelector("/form-edit");
+  containerFormEdit.append(formEdit);
 }
