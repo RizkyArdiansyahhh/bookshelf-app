@@ -100,13 +100,20 @@ main .container-right #cari-buku form button:hover {
   color: black;
 }
 /* SECTION TAMBAH BUKU END */
-
+.container-right {
+  display: flex;
+  flex-direction: column;
+}
 .container-right .rak-buku {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: 2rem;
   justify-content: center;
+}
+.container-right .rak-buku #uncompleted,
+.container-right .rak-buku #completed {
+  height: fit-content;
 }
 
 /* SECTION CARI BUKU START */
