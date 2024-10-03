@@ -227,7 +227,7 @@ function editBook(bookId) {
   labelYear.innerText = "Year: ";
   const year = document.createElement("input");
   year.setAttribute("id", "formEditYear");
-  year.setAttribute("type", "text");
+  year.setAttribute("type", "number");
   year.setAttribute("value", bookTarget.year);
   containerYear.append(labelYear, year);
 
