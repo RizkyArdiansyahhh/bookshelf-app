@@ -124,6 +124,7 @@ main .container-right .rak-buku [data-testid="bookItem"] {
   background-color: #7cf5ff;
   padding: 1.3rem;
   border-radius: 15px;
+  margin-bottom: 1rem;
 }
 
 main .container-right .rak-buku button.selesai,

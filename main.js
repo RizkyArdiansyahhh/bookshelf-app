@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
     addBook();
   });
   loadDataBook();
+  const search = document.getElementById("searchBook");
+  search.addEventListener("submit", function (e) {
+    e.preventDefault();
+    searchBook();
+  });
 });
 
 function addBook() {
@@ -47,8 +52,6 @@ function generatedBookObject(id, title, author, year, isComplete) {
 }
 
 document.addEventListener(RENDER_EVENT, function () {
-  console.log(books);
-
   const incompleteBookList = document.getElementById("incompleteBookList");
   incompleteBookList.innerHTML = "";
 
@@ -283,4 +286,28 @@ function loadDataBook() {
     }
   }
   document.dispatchEvent(new Event(RENDER_EVENT));
+}
+
+// Function untuk mencari buku
+function searchBook() {
+  const inputSearch = document.getElementById("searchBookTitle").value;
+  inputSearch.toLowerCase();
+  const filterBooks = books.filter(function (book) {
+    return book.title.toLowerCase().includes(inputSearch);
+  });
+
+  const incompleteBookList = document.getElementById("incompleteBookList");
+  incompleteBookList.innerHTML = "";
+
+  const completeBookList = document.getElementById("completeBookList");
+  completeBookList.innerHTML = "";
+
+  for (const bookItem of filterBooks) {
+    const elementBook = makeBook(bookItem);
+    if (bookItem.isComplete) {
+      completeBookList.append(elementBook);
+    } else {
+      incompleteBookList.append(elementBook);
+    }
+  }
 }
