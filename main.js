@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function addBook() {
   const judul = document.getElementById("bookFormTitle").value;
   const penulis = document.getElementById("bookFormAuthor").value;
-  const tahun = document.getElementById("bookFormYear").value;
+  const tahun = parseInt(document.getElementById("bookFormYear").value, 10);
   const checkbox = document.getElementById("bookFormIsComplete");
 
   const bookObject = generatedBookObject(
