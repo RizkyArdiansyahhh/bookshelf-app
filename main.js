@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     e.preventDefault();
     addBook();
   });
+  loadDataBook();
 });
 
 function addBook() {
@@ -269,4 +270,17 @@ function actionEditBook(bookTarget) {
   overlay.classList.remove("active");
   const formEdit = document.querySelector(".form-edit");
   formEdit.innerHTML = "";
+}
+
+// Function untuk ngeload data buku
+function loadDataBook() {
+  if (isStorageExist()) {
+    const dataBuku = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (dataBuku !== null) {
+      for (const bookItem of dataBuku) {
+        books.push(bookItem);
+      }
+    }
+  }
+  document.dispatchEvent(new Event(RENDER_EVENT));
 }
